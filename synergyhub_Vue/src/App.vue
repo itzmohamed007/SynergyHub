@@ -1,8 +1,7 @@
 <template>
-  <nav class="d-flex justify-content-end mx-5 gap-2">
+  <nav class="d-flex gap-2">
     <router-link to="/" class="">Home</router-link>
     <router-link to="/inscription" class="">Inscription</router-link>
-    <router-link to="/authentification" class="">Authentification</router-link>
   </nav>
   <router-view/>
 </template>
@@ -25,7 +24,9 @@
 }
 
 nav {
+  justify-content: end;
   padding: 30px;
+  margin-right: 3rem;
 }
 
 nav a {
@@ -43,5 +44,12 @@ nav a:hover {
 nav a.router-link-exact-active {
   color: #ffffff;
   background-color: rgb(0, 0, 0);
+}
+@media (max-width: 768px) {
+  nav {
+    justify-content: space-between;
+    padding: 20px;
+    margin-right: 0;
+  }
 }
 </style>

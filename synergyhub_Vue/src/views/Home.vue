@@ -3,7 +3,12 @@
     <h1 class="mb-3 fw-bold">Ideas Of Today</h1>
     <h6>Find All Inspirational Ideas, Topics And Experiences Here...</h6>
     <div class="main-image-container container w-100">
-      <a href="post"><img src="@/assets/images/Addiction.png" alt="" class="main-image mt-5" /></a>
+      <a href="post"
+        ><img
+          src="@/assets/images/Addiction.png"
+          alt=""
+          class="main-image mt-5"
+      /></a>
       <div class="image-text mx-5 mb-4">
         <p>Mohamed Bourra | 18/02/2023</p>
         <p class="fw-bold fs-3">Addiction</p>
@@ -133,5 +138,11 @@ img {
 }
 .post-description {
   font-size: 1.3rem;
+}
+@media (max-width: 768px) {
+  .main-image-container {
+    width: 500px;
+    height: 350px;
+  }
 }
 </style>

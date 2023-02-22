@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <Form v-if="formVisible" @close="formVisible = false" />
     <div class="main-image-container container w-100">
       <img src="@/assets/images/Addiction.png" alt="" class="main-image mt-5" />
       <div class="image-info mx-5 mb-4">
@@ -21,7 +22,7 @@
       </div>
     </div>
     <div class="text container mt-5 text-start">
-      <p>
+      <p class="post-text">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Error
         perferendis facere similique odit veritatis in consequatur nobis rerum
         ducimus mollitia eos quaerat molestiae distinctio deleniti suscipit
@@ -46,26 +47,79 @@
         doloremque? Cum officia et maxime eaque beatae!
       </p>
       <div class="d-flex justify-content-center gap-5 my-5">
-        <button class="btn btn-outline-dark rounded-5 px-5 py-2">Comment</button>
+        <button
+          class="btn btn-outline-dark rounded-5 px-5 py-2"
+          @click="showForm()"
+        >
+          Comment
+        </button>
         <button class="btn btn-outline-dark rounded-5 px-5 py-2">Like</button>
-
+      </div>
+      <div class="comments">
+        <p class="user"><strong>Abdelali khalif</strong></p>
+        <p class="comment">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis
+          saepe velit debitis animi eligendi et at eveniet ut id. Totam adipisci
+          aperiam illum sequi corrupti libero blanditiis. Pariatur, aut minima!
+        </p>
+        <hr class="divider hr w-50">
+        <p class="user"><strong>Ayoub Ahibban</strong></p>
+        <p class="comment">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis
+          saepe velit debitis animi eligendi et at eveniet ut id. Totam adipisci
+          aperiam illum sequi corrupti libero blanditiis. Pariatur, aut minima!
+        </p>
+        <hr class="divider hr w-50">
+        <p class="user"><strong>Mahdi Hassani Saysi</strong></p>
+        <p class="comment">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis
+          saepe velit debitis animi eligendi et at eveniet ut id. Totam adipisci
+          aperiam illum sequi corrupti libero blanditiis. Pariatur, aut minima!
+        </p>
+        <hr class="divider hr w-50">
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Form from "../components/Comment.vue";
 export default {
   name: "Home",
+  data() {
+    return {
+      formVisible: false,
+    };
+  },
+  components: {
+    Form,
+  },
+  methods: {
+    showForm() {
+      this.formVisible = true;
+    },
+  },
 };
 </script>
 
 <style scoped>
+.user {
+  text-decoration: underline;
+}
+.comments {
+  border: 2px solid black;
+  padding: 2rem 1rem;
+  margin-bottom: 5rem;
+}
+.divider {
+  border-top: 0; /*this line of code remove the initiale decoration of a hr in bootstrap*/
+  height: 0.2rem;
+  margin: 1.5rem auto;
+  background-color: lavender;
+  opacity: 1;
+}
 img {
   cursor: pointer;
-}
-.home {
-  padding: 2rem 0;
 }
 .main-image-container {
   position: relative;
@@ -103,5 +157,19 @@ img {
 }
 .post-description {
   font-size: 1.3rem;
+}
+textarea {
+  width: 100%;
+  height: 300px;
+}
+@media (max-width: 768px) {
+  .post-text {
+    text-align: center;
+    padding: 5px;
+  }
+  .categories {
+    flex-direction: column;
+    width: 40%;
+  }
 }
 </style>

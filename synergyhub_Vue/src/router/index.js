@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Inscription from "../views/Inscription.vue";
 import Authentification from "../views/Authentification.vue";
 import Post from "../views/Post.vue";
+import Add from "../views/AddPost"
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/authentification",
     name: "authentification",
     component: Authentification,
+  },
+  {
+    path: "/create",
+    name: "create",
+    component: Add,
   }
 ];
 
