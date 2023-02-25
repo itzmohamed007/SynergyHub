@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\IdeaController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 use App\Models\User;
 use App\Models\Idea;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Spatie\FlareClient\View;
@@ -17,89 +22,41 @@ use Spatie\FlareClient\View;
 |
 */
 
-// Route::post('/utilisateur/inscription', [UserController::class, 'inscription']);
+// Public Routes
+    // Authentification
+    Route::post('/register', [AuthController::class, 'register']); // Register
+    Route::post('/login', [AuthController::class, 'login']); // Login
 
-// read (GET)
-Route::get('/user/get', function () {
-    return User::all();
-});
+    // Read Ideas
+    Route::get('/ideas', [IdeaController::class, 'index']); // Read
+    Route::get('/ideas/{id}', [IdeaController::class, 'show']); // Read Single
+    Route::get('/ideas/search/{name}', [IdeaController::class, 'search']); // Search
 
-// create (POST)
-Route::post('user/insert', function () {
-    return User::create([
-        'name' => request('name'),
-        'email' => request('email'),
-        'password' => request('password')
-    ]);
-});
+    // Read Comments
+    Route::get('/comments', [CommentController::class, 'index']);
+    Route::get('/comments/search/{idea_id}', [CommentController::class, 'search']); // Search
 
-// update (PUT)
-Route::put('user/update/{user}', function (User $user) {
-    $user->update([
-        'name' => request('name'),
-        'email' => request('email'),
-        'password' => request('password')
-    ]);
-
-    return response()->json($user, 200);
-});
-
-// delete (DELETE)
-Route::delete('user/delete/{user}', function (User $user) {
-    $success = $user->delete();
-
-    if ($success) {
-        return response()->json('Post Deleted Successfully', 200);
-    } else {
-        return response()->json('Delete Failed', 400);
-    }
-});
+    // Read Likes
+    Route::get('/likes/search/{idea_id}', [LikeController::class, 'search']); // Search
 
 
 
 
+// Protected Routes
+Route::group(['middleware' => ['auth:sanctum']], function() {
 
-// read (GET)
-Route::get('/idea/get', function () {
-    return Idea::all();
-});
+    // Crud Ideas
+    Route::post('/ideas', [IdeaController::class, 'store']); // Create
+    Route::put('/ideas/{id}', [IdeaController::class, 'update']); // Update
+    Route::delete('/ideas/{id}', [IdeaController::class, 'destroy']); // Delete
+    Route::post('/logout', [AuthController::class, 'logout']); // Logout
 
-// create (POST)
-Route::post('idea/insert', function () {
-    return Idea::create([
-        'user_id' => request('user_id'),
-        'title' => request('title'),
-        'description' => request('description'),
-        'files' => request('files'),
-        'categorie' => request('categorie'),
-    ]);
-});
+    // Crud Comments
+    Route::post('/comments', [CommentController::class, 'store']); // Create
+    Route::delete('/comments/{id}/{user_id}', [CommentController::class, 'destroy']); // Delete
 
-// update (PUT)
-Route::put('idea/update/{idea}', function (Idea $idea) {
-    $idea->update([
-        'user_id' => request('user_id'),
-        'title' => request('title'),
-        'description' => request('description'),
-        'files' => request('files'),
-        'categorie' => request('categorie'),
-    ]);
-
-    return response()->json($idea, 200);
-});
-
-// delete (DELETE)
-Route::delete('idea/delete/{idea}', function (Idea $idea) {
-    $success = $idea->delete();
-
-    if ($success) {
-        return response()->json('Post Deleted Successfully', 200);
-    } else {
-        return response()->json('Delete Failed', 400);
-    }
-});
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    // Crud Likes
+    Route::get('/likes', [LikeController::class, 'index']); // Read
+    Route::post('/likes', [LikeController::class, 'store']); // Create
+    Route::delete('/likes/{id}/{user_id}/{idea_id}/{comment_id}', [LikeController::class, 'destroy']); // Delete
 });
