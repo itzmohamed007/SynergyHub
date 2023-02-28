@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categorie;
 use App\Models\Idea;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class IdeaController extends Controller
 {
@@ -13,7 +15,7 @@ class IdeaController extends Controller
      */
     public function index()
     {
-        return Idea::all();
+        return Idea::with('categories')->get();
     }
 
     /**
@@ -21,29 +23,54 @@ class IdeaController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required|integer',
+        $valid = $request->validate([
             'title' => 'required|string|max:50',
             'description' => 'required|string',
-            'files' => 'required',
-            // 'files.*' => 'required|file|mimes:jpeg,png|max:2048',
-            'categorie' => 'required',
+            'image' => 'required',
+            'categories' => 'required|array',
+            'categories.*' => 'required|string|max:50'
+        ]); 
+
+        $idea = Idea::create([
+            'user_id' => Auth::id(),
+            'title' => $valid['title'],
+            'description' => $valid['description'],
+            'image' => $valid['image']
         ]);
 
-        Idea::create($request->all());
+        // $idea->categories()->attach($valid['categories']);
+        // $idea->categories()->sync($valid['categories']);
 
-        return [
-            'status' => 200,
+        $categoriesIds = [];
+
+        foreach($valid['categories'] as $categorie) {
+            $categorieObj = Categorie::firstOrCreate(['name' => $categorie]);
+            $categoriesIds[] = $categorieObj->id;
+        }
+
+        $idea->categories()->syncWithoutDetaching($categoriesIds);
+
+        return response([
+            'status' => 201,
             'message' => 'Idea Created Successfully'
-        ];
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Idea $idea)
     {
-        return Idea::find($id);
+        return $idea->load('categories');
+    }
+
+    /**
+     * Display all resources.
+     */
+    public function showAll()
+    {
+        $ideas = Idea::with('categories')->get();
+        return response()->json($ideas, 200);
     }
 
     /**
@@ -52,7 +79,19 @@ class IdeaController extends Controller
     public function update(Request $request, string $id)
     {
         if ($idea = Idea::find($id)) {
-            $idea->update($request->all());
+            $idea->update($request->only(['title', 'description', 'image']));
+
+            if($request->has('categories')) {
+                $categoriesIds = [];
+
+                foreach($request->categories as $categorie) {
+                    $categorieObj = Categorie::firstOrCreate(['name' => $categorie]);
+                    $categoriesIds[] = $categorieObj->id;
+                }
+
+                $idea->categories()->sync($categoriesIds);
+            }
+            
             return [
                 'status' => 200,
                 'message' => 'Idea Updated Successfully'
@@ -83,8 +122,8 @@ class IdeaController extends Controller
         }
     }
 
-    public function search(string $categorie)
+    public function search(string $titel)
     {
-        return Idea::where('categorie', 'like', '%' . $categorie . '%')->get();
+        return Idea::where('title', 'like', '%' . $titel . '%')->with('categories')->get();
     }
 }

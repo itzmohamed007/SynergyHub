@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Categorie;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +14,11 @@ class Idea extends Model
         'user_id',
         'title',
         'description',
-        'files',
-        'categorie',
+        'image'
     ];
+
+    public function categories()
+    {
+        return $this->belongsToMany(Categorie::class, 'idea_categorie')->withTimestamps()->as('idea_categories');
+    }
 }

@@ -14,16 +14,14 @@ return new class extends Migration
         Schema::create('ideas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->string('title');
+            $table->longText('description');
+            $table->string('image');
+
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-
-            $table->string('title');
-            $table->longText('description');
-            $table->string('files');
-            $table->string('categorie');
+                ->onDelete('cascade');
         });
     }
 
