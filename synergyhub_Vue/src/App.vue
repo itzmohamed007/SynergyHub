@@ -1,10 +1,46 @@
 <template>
   <nav class="d-flex gap-2">
-    <router-link to="/" class="">Home</router-link>
-    <router-link to="/inscription" class="">Inscription</router-link>
+    <router-link to="/">Home</router-link>
+    <router-link @click.prevent="loggingCheck()" to="/create">Add Post</router-link>
+    <router-link @click.prevent="loggingCheck()" to="/inscription">Inscription</router-link>
+    <button @click="logout()" class="btn fw-bold text-danger">Logout</button>
   </nav>
   <router-view/>
 </template>
+
+<script>
+import router from './router';
+export default {
+  data() {
+    return {
+      
+    }
+  },
+  methods: {
+    loggingCheck() {
+      let tempToken = localStorage.getItem('token');
+      if(tempToken == null || tempToken == undefined || tempToken == '') {
+        router.push('/inscription')
+      }
+    },
+    logout() {
+      let tempToken = localStorage.getItem('token')
+      if(tempToken == null) {
+        alert('You Are Not Authenticated')
+        router.push('/')
+      } else {
+        localStorage.removeItem('token')
+        alert('')
+        router.push('/')
+      }
+    }
+  },
+  mounted() {
+    console.log(localStorage.getItem('token'))
+  }
+}
+</script>
+
 
 
 <style>
@@ -29,7 +65,7 @@ nav {
   margin-right: 3rem;
 }
 
-nav a {
+nav a, button {
   font-weight: bold;
   color: #2c3e50;
   text-decoration: none;
@@ -37,7 +73,7 @@ nav a {
   border-radius: 4px;
 }
 
-nav a:hover {
+nav a:hover, button:hover {
   color:rgb(167, 167, 167);
   transition: .5s;
 }

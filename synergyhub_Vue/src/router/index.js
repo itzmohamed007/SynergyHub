@@ -4,6 +4,7 @@ import Inscription from "../views/Inscription.vue";
 import Authentification from "../views/Authentification.vue";
 import Post from "../views/Post.vue";
 import Add from "../views/AddPost"
+import Logout from "../views/Logout"
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: "/create",
     name: "create",
     component: Add,
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    component: Logout
   }
 ];
 

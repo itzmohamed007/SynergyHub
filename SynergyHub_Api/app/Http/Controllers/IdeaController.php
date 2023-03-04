@@ -26,20 +26,30 @@ class IdeaController extends Controller
         $valid = $request->validate([
             'title' => 'required|string|max:50',
             'description' => 'required|string',
+            'content' => 'required|string|min:20',
             'image' => 'required',
             'categories' => 'required|array',
             'categories.*' => 'required|string|max:50'
+        ], [
+            'title.required' => 'The title field is required.',
+            'description.required' => 'The description field is required.',
+            'content.required' => 'The content field is required.',
+            'content.min' => 'The content field must be at least 20 characters.',
+            'image.required' => 'The image field is required.',
+            'categories.required' => 'The categories field is required.',
+            'categories.*.max' => 'Each category field may not be greater than 50 characters.',
         ]); 
+
+        $image = time() . '-' . $request->title . '.png';
+        $request->image->move(dirname(base_path()) . '\synergyhub\src\assets\added_images', $image);
 
         $idea = Idea::create([
             'user_id' => Auth::id(),
             'title' => $valid['title'],
             'description' => $valid['description'],
-            'image' => $valid['image']
+            'content' => $valid['content'],
+            'image' => $image
         ]);
-
-        // $idea->categories()->attach($valid['categories']);
-        // $idea->categories()->sync($valid['categories']);
 
         $categoriesIds = [];
 
@@ -79,7 +89,7 @@ class IdeaController extends Controller
     public function update(Request $request, string $id)
     {
         if ($idea = Idea::find($id)) {
-            $idea->update($request->only(['title', 'description', 'image']));
+            $idea->update($request->only(['title', 'description', 'content', 'image']));
 
             if($request->has('categories')) {
                 $categoriesIds = [];

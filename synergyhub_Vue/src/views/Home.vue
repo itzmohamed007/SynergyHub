@@ -1,97 +1,27 @@
 <template>
   <div class="home">
-    <h1 class="mb-3 fw-bold">Ideas Of Today</h1>
-    <h6>Find All Inspirational Ideas, Topics And Experiences Here...</h6>
+    <h1 class="mb-3 fw-bold">SynergyHub</h1>
     <div class="main-image-container container w-100">
-      <a href="post"
-        ><img
-          src="@/assets/images/Addiction.png"
-          alt=""
-          class="main-image mt-5"
-      /></a>
-      <div class="image-text mx-5 mb-4">
-        <p>Mohamed Bourra | 18/02/2023</p>
-        <p class="fw-bold fs-3">Addiction</p>
-        <p class="text-light">I want to make this text appear on the image</p>
-        <div class="categories d-flex gap-2">
-          <button class="btn btn-outline-light rounded-5 px-3 py-0">art</button>
-          <button class="btn btn-outline-light rounded-5 px-3 py-0">
-            problem
-          </button>
-          <button class="btn btn-outline-light rounded-5 px-3 py-0">
-            sport
-          </button>
-        </div>
+      <img src="@/assets/images/Idea.png" alt="" class="main-image mt-5"/>
+      <div class="image-text">
+        <p class="fw-bold fs-3">Looking For Inspiration ?</p>
+        <p class="text-light">Find All Inspirational Ideas, Topics And Experiences Here...</p>
       </div>
     </div>
-    <!--  -->
     <div class="container other-topics mt-5 gap-5">
-      <div class="row justify-content-between">
-        <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
-          <img src="@/assets/images/Art.png" alt="" class="img-fluid w-100" />
-          <div class="mt-3 text-start">
-            <p class="post-info fw-bold mb-2">Omar Bourra | 17/02/2023</p>
-            <p class="post-description fw-bold mb-2">Art In Our Days</p>
-            <p class="post-content">
-              the art is a art that should be artistique and artistique.
-            </p>
-            <div class="categories d-flex gap-2">
-              <button class="btn btn-outline-dark rounded-5 px-3 py-0">
-                art
-              </button>
-              <button class="btn btn-outline-dark rounded-5 px-3 py-0">
-                problem
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
-          <img
-            src="@/assets/images/Astronologie.png"
-            alt=""
-            class="img-fluid w-100"
-          />
-          <div class="mt-3 text-start">
-            <p class="post-info fw-bold mb-2">Ahmed Bourra | 15/02/2023</p>
-            <p class="post-description fw-bold mb-2">
-              Astronologie In Our Days
-            </p>
-            <p class="post-content">
-              the Astronologie is a Astronologie that should be Astronologie.
-            </p>
-            <div class="categories d-flex gap-2">
-              <button class="btn btn-outline-dark rounded-5 px-3 py-0">
-                studies
-              </button>
-              <button class="btn btn-outline-dark rounded-5 px-3 py-0">
-                astronologie
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
-          <img
-            src="@/assets/images/Development.png"
-            alt=""
-            class="img-fluid w-100"
-          />
-          <div class="mt-3 text-start">
-            <p class="post-info fw-bold mb-2">Hamza Bakkouri | 17/02/2023</p>
-            <p class="post-description fw-bold mb-2">Motivation In Our Days</p>
-            <p class="post-content">
-              the motivation is a motivation that should be motivational and
-              motivational.
-            </p>
-            <div class="categories d-flex gap-2">
-              <button class="btn btn-outline-dark rounded-5 px-3 py-0">
-                motivation
-              </button>
-              <button class="btn btn-outline-dark rounded-5 px-3 py-0">
-                problem
-              </button>
-              <button class="btn btn-outline-dark rounded-5 px-3 py-0">
-                work
-              </button>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div v-for="idea in ideas" :key="idea.id" class="col mb-5">
+          <div class="idea">
+            <img :src="require(`@/assets/added_images/${idea.image}`)"  alt="" class="img-fluid w-100" />
+            <div class="mt-3 text-start">
+              <p class="post-info fw-bold mb-0">{{ new Date(idea.created_at).toLocaleDateString() }}</p>
+              <p class="post-description fw-bold mb-2 mt-0">{{ idea.title }}</p>
+              <p class="post-content">{{ idea.description }}</p>
+              <div class="catgories d-flex gap-2">
+                <div v-for="categorie in idea.categories" :key="categorie.id">
+                  <button class="categorie btn btn-outline-dark rounded-5 px-3 py-0">{{ categorie.name }}</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -101,13 +31,35 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "Home",
+  data() {
+    return {
+      ideas: [],
+      isLogged: localStorage.getItem('token')
+    }
+  },
+  methods: {
+    async fetch () {
+      let response = await axios.get('http://127.0.0.1:8000/api/ideas')
+      return response.data
+    }
+  },
+  async mounted() {
+    this.ideas = await this.fetch()
+  }
 };
 </script>
 
 <style scoped>
-img {
+.categorie {
+  cursor: default;
+}
+.catgories {
+  flex-wrap: wrap;
+}
+.other-topics img {
   cursor: pointer;
 }
 .main-image-container {
@@ -121,12 +73,13 @@ img {
   height: 100%;
 }
 .image-text {
-  text-align: start;
+  text-align: center;
   position: absolute;
   color: white;
   z-index: 1;
-  bottom: 0;
-  left: 0;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .other-topics img {
   width: 300px;

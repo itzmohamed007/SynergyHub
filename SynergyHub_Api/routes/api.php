@@ -22,6 +22,7 @@ use Spatie\FlareClient\View;
 */
 
 // Public Routes
+
 // Authentification
 Route::post('/register', [AuthController::class, 'register']); // Register
 Route::post('/login', [AuthController::class, 'login']); // Login

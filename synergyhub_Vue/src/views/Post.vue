@@ -53,7 +53,6 @@
         >
           Comment
         </button>
-        <button class="btn btn-outline-dark rounded-5 px-5 py-2">Like</button>
       </div>
       <div class="comments">
         <p class="user"><strong>Abdelali khalif</strong></p>
@@ -62,6 +61,9 @@
           saepe velit debitis animi eligendi et at eveniet ut id. Totam adipisci
           aperiam illum sequi corrupti libero blanditiis. Pariatur, aut minima!
         </p>
+        <div class="d-flex align-items-center justify-content-center">
+          <button class="like btn btn-outline-danger rounded-5 px-5 py-1">Like</button>
+        </div>
         <hr class="divider hr w-50">
         <p class="user"><strong>Ayoub Ahibban</strong></p>
         <p class="comment">
@@ -69,6 +71,9 @@
           saepe velit debitis animi eligendi et at eveniet ut id. Totam adipisci
           aperiam illum sequi corrupti libero blanditiis. Pariatur, aut minima!
         </p>
+        <div class="d-flex align-items-center justify-content-center">
+          <button class="like btn btn-outline-danger rounded-5 px-5 py-1">Like</button>
+        </div>
         <hr class="divider hr w-50">
         <p class="user"><strong>Mahdi Hassani Saysi</strong></p>
         <p class="comment">
@@ -76,6 +81,9 @@
           saepe velit debitis animi eligendi et at eveniet ut id. Totam adipisci
           aperiam illum sequi corrupti libero blanditiis. Pariatur, aut minima!
         </p>
+        <div class="d-flex align-items-center justify-content-center">
+          <button class="like btn btn-outline-danger rounded-5 px-5 py-1">Like</button>
+        </div>
         <hr class="divider hr w-50">
       </div>
     </div>
@@ -103,6 +111,9 @@ export default {
 </script>
 
 <style scoped>
+.like {
+  padding: 0 2rem;
+}
 .user {
   text-decoration: underline;
 }
