@@ -91,7 +91,7 @@ export default {
       for (let i = 0; i < this.categories.length; i++) {
         formData.append('categories[]', this.categories[i])
       }
-      
+
       try {
         let response = await axios.post('http://127.0.0.1:8000/api/ideas', formData, { headers })
         router.push('/')

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categorie;
 use App\Models\Idea;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -71,7 +72,17 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
-        return $idea->load('categories');
+        return $idea->load('comments.user', 'likes', 'categories');
+    }
+
+    // public function userIdeas(Idea $idea)
+    // {
+    //     return $idea->ideas()->with('categories')->with('comments')->with('likes')->get()->where('user_id', auth()->id());
+    // }
+
+    public function userIdeas()
+    {
+        return Idea::with('categories', 'comments.user', 'likes')->where('user_id', auth()->id())->get();
     }
 
     /**

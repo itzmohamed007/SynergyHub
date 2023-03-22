@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
-import Inscription from "../views/Inscription.vue";
-import Authentification from "../views/Authentification.vue";
-import Post from "../views/Post.vue";
+import Home from "../views/Home";
+import Inscription from "../views/Inscription"
+import Authentification from "../views/Authentification"
+import Post from "../views/Post"
 import Add from "../views/AddPost"
 import Logout from "../views/Logout"
+import Profile from '../views/Profile'
 
 const routes = [
   {
@@ -18,7 +19,7 @@ const routes = [
     component: Inscription,
   },
   {
-    path: "/post",
+    path: "/post/:id",
     name: "post",
     component: Post,
   },
@@ -36,6 +37,11 @@ const routes = [
     path: "/logout",
     name: "logout",
     component: Logout
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: Profile,
   }
 ];
 

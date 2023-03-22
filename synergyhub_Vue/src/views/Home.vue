@@ -2,7 +2,7 @@
   <div class="home">
     <h1 class="mb-3 fw-bold">SynergyHub</h1>
     <div class="main-image-container container w-100">
-      <img src="@/assets/images/Idea.png" alt="" class="main-image mt-5"/>
+      <img src="@/assets/images/Idea.png" alt="" class="main-image mt-5" />
       <div class="image-text">
         <p class="fw-bold fs-3">Looking For Inspiration ?</p>
         <p class="text-light">Find All Inspirational Ideas, Topics And Experiences Here...</p>
@@ -12,14 +12,18 @@
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div v-for="idea in ideas" :key="idea.id" class="col mb-5">
           <div class="idea">
-            <img :src="require(`@/assets/added_images/${idea.image}`)"  alt="" class="img-fluid w-100" />
+            <a :href="`post/${idea.id}`">
+              <img :src="require(`@/assets/added_images/${idea.image}`)" class="img-fluid w-100"/>
+            </a>
             <div class="mt-3 text-start">
               <p class="post-info fw-bold mb-0">{{ new Date(idea.created_at).toLocaleDateString() }}</p>
               <p class="post-description fw-bold mb-2 mt-0">{{ idea.title }}</p>
               <p class="post-content">{{ idea.description }}</p>
               <div class="catgories d-flex gap-2">
                 <div v-for="categorie in idea.categories" :key="categorie.id">
-                  <button class="categorie btn btn-outline-dark rounded-5 px-3 py-0">{{ categorie.name }}</button>
+                  <button class="categorie btn btn-outline-dark rounded-5 px-3 py-0">
+                    {{ categorie.name }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -31,24 +35,24 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 export default {
   name: "Home",
   data() {
     return {
       ideas: [],
-      isLogged: localStorage.getItem('token')
-    }
+      isLogged: localStorage.getItem("token"),
+    };
   },
   methods: {
-    async fetch () {
-      let response = await axios.get('http://127.0.0.1:8000/api/ideas')
-      return response.data
-    }
+    async fetch() {
+      let response = await axios.get("http://127.0.0.1:8000/api/ideas");
+      return response.data;
+    },
   },
   async mounted() {
-    this.ideas = await this.fetch()
-  }
+    this.ideas = await this.fetch();
+  },
 };
 </script>
 

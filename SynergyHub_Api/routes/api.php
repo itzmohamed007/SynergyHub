@@ -47,6 +47,7 @@ Route::get('/likes/search/{idea_id}', [LikeController::class, 'search']); // Sea
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Crud Ideas
+    Route::get('/user/ideas', [IdeaController::class, 'userIdeas']); // Read User's
     Route::post('/ideas', [IdeaController::class, 'store']); // Create
     Route::put('/ideas/{id}', [IdeaController::class, 'update']); // Update
     Route::delete('/ideas/{id}', [IdeaController::class, 'destroy']); // Delete

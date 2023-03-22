@@ -2,7 +2,7 @@
   <nav class="d-flex gap-2">
     <router-link to="/">Home</router-link>
     <router-link @click.prevent="loggingCheck()" to="/create">Add Post</router-link>
-    <router-link @click.prevent="loggingCheck()" to="/inscription">Inscription</router-link>
+    <router-link to="/inscription">Inscription</router-link>
     <button @click="logout()" class="btn fw-bold text-danger">Logout</button>
   </nav>
   <router-view/>
@@ -17,6 +17,13 @@ export default {
     }
   },
   methods: {
+    checkLoggingAuth() {
+      let tempToken = localStorage.getItem('token');
+      if(tempToken != null) {
+        alert('You are already loged in a lhmar')
+        router.push('/')
+      }
+    },
     loggingCheck() {
       let tempToken = localStorage.getItem('token');
       if(tempToken == null || tempToken == undefined || tempToken == '') {
@@ -34,9 +41,6 @@ export default {
         router.push('/')
       }
     }
-  },
-  mounted() {
-    console.log(localStorage.getItem('token'))
   }
 }
 </script>
