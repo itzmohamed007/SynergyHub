@@ -6,6 +6,7 @@ import Post from "../views/Post"
 import Add from "../views/AddPost"
 import Logout from "../views/Logout"
 import Profile from '../views/Profile'
+import Update from '../views/Update'
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: "/profile",
     name: "profile",
     component: Profile,
+  },
+  {
+    path: "/update/:id",
+    name: "update",
+    component: Update
   }
 ];
 

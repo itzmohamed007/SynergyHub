@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Categorie;
 use App\Models\Idea;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +38,7 @@ class IdeaController extends Controller
             'image.required' => 'The image field is required.',
             'categories.required' => 'The categories field is required.',
             'categories.*.max' => 'Each category field may not be greater than 50 characters.',
-        ]); 
+        ]);
 
         $image = time() . '-' . $request->title . '.png';
         $request->image->move(dirname(base_path()) . '\synergyhub\src\assets\added_images', $image);
@@ -54,7 +53,7 @@ class IdeaController extends Controller
 
         $categoriesIds = [];
 
-        foreach($valid['categories'] as $categorie) {
+        foreach ($valid['categories'] as $categorie) {
             $categorieObj = Categorie::firstOrCreate(['name' => $categorie]);
             $categoriesIds[] = $categorieObj->id;
         }
@@ -75,6 +74,14 @@ class IdeaController extends Controller
         return $idea->load('comments.user', 'likes', 'categories');
     }
 
+    /**
+     * Display the specified resource for updating.
+     */
+    public function updateData(Idea $idea)
+    {
+        return $idea->load('categories');
+    }
+
     // public function userIdeas(Idea $idea)
     // {
     //     return $idea->ideas()->with('categories')->with('comments')->with('likes')->get()->where('user_id', auth()->id());
@@ -88,6 +95,7 @@ class IdeaController extends Controller
     /**
      * Display all resources.
      */
+    
     public function showAll()
     {
         $ideas = Idea::with('categories')->get();
@@ -97,22 +105,51 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
     public function update(Request $request, string $id)
     {
-        if ($idea = Idea::find($id)) {
-            $idea->update($request->only(['title', 'description', 'content', 'image']));
+        $valid = $request->validate([
+            'title' => 'required|string|max:50',
+            'description' => 'required|string',
+            'content' => 'required|string|min:20',
+            'categories' => 'required|array',
+            'categories.*' => 'required|string|max:50'
+        ], [
+            'title.required' => 'The title field is required.',
+            'description.required' => 'The description field is required.',
+            'content.required' => 'The content field is required.',
+            'content.min' => 'The content field must be at least 20 characters.',
+            'categories.required' => 'The categories field is required.',
+            'categories.*.max' => 'Each category field may not be greater than 50 characters.',
+        ]);
 
-            if($request->has('categories')) {
+        if ($idea = Idea::find($id)) {
+
+            $image = 'default.png';
+
+            if($request->hasFile('image')) {
+                $image = time() . '-' . $request->title . '.png';
+                $request->image->move(dirname(base_path()) . '\synergyhub\src\assets\added_images', $image);
+            }
+
+            $idea->update([
+                'title' => $valid['title'],
+                'description' => $valid['description'],
+                'content' => $valid['content'],
+                'image' => $image
+            ]);
+
+            if ($request->has('categories')) {
                 $categoriesIds = [];
 
-                foreach($request->categories as $categorie) {
+                foreach ($request->categories as $categorie) {
                     $categorieObj = Categorie::firstOrCreate(['name' => $categorie]);
                     $categoriesIds[] = $categorieObj->id;
                 }
 
                 $idea->categories()->sync($categoriesIds);
             }
-            
+
             return [
                 'status' => 200,
                 'message' => 'Idea Updated Successfully'

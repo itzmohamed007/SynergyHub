@@ -49,9 +49,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Crud Ideas
     Route::get('/user/ideas', [IdeaController::class, 'userIdeas']); // Read User's
     Route::post('/ideas', [IdeaController::class, 'store']); // Create
+    Route::get('/ideas/update/{idea}', [IdeaController::class, 'updateData']); // Read Update
     Route::put('/ideas/{id}', [IdeaController::class, 'update']); // Update
     Route::delete('/ideas/{id}', [IdeaController::class, 'destroy']); // Delete
-    
+
     // Crud Comments
     Route::post('/comments', [CommentController::class, 'store']); // Create
     Route::delete('/comments/{id}/{user_id}', [CommentController::class, 'destroy']); // Delete

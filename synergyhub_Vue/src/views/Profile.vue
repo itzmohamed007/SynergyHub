@@ -51,8 +51,8 @@ export default {
   },
   async mounted() {
     const token = localStorage.getItem('token')
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    const response = await axios.get("http://127.0.0.1:8000/api/user/ideas");
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    const response = await axios.get("http://127.0.0.1:8000/api/user/ideas")
     this.ideas = response.data;
     console.log(response);
   },

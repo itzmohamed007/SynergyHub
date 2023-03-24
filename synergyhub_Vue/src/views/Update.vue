@@ -1,9 +1,9 @@
 <template>
   <div class="inscription d-flex flex-column justify-content-center align-items-center">
-    <h1 class="title">Post</h1>
+    <h1 class="title">Update</h1>
     <div class="hero container rounded-3 mt-5 mb-5 mx-5">
       <form class="d-flex flex-column align-items-center p-4" autocomplete="off" enctype="multipart/form-data"
-        @submit.prevent="addPost()">
+        @submit.prevent="update()">
         <div class="form-floating w-100 mb-4">
           <input class="form-control rounded-1" type="text" placeholder="title" v-model="title"/>
           <label for="">Title</label>
@@ -13,7 +13,7 @@
           <input class="form-control rounded-1" type="text" placeholder="description" v-model="description"/>
           <label for="">Description</label>
           <p class="text-white bg-danger w-100 rounded-1 mt-3">{{ description_error }}</p>
-          </div>
+        </div>
         <div class="form-floating w-100 mb-4">
           <textarea class="form-control rounded-1" placeholder="Content" v-model="content"></textarea>
           <label>Content</label>
@@ -23,17 +23,25 @@
           <input class="form-control rounded-1 p-0" type="file" ref="fileInput" @change="onFileChange"/>
           <p class="text-white bg-danger w-100 rounded-1 mt-3">{{ image_error }}</p>
         </div>
+
+        <div class="w-100 mt-4 mb-3">
+          <p class="text-dark mb-0">Old Categories</p>
+          <div v-for="categorie in oldCategories" :key="categorie" class="oldCategories">
+            <span>{{ categorie.name }}</span>
+          </div>
+        </div>
+
         <div class="form-floating w-100 mt-4">
-          <label>categories</label>
           <input class="form-control rounded-1" type="text" placeholder="categorie" v-model="tempCategorie" 
           @keyup="pushCategorie"/>
-          <div v-for="categorie in categories" :key="categorie" class="categories">
+          <label>New Categories</label>
+          <div v-for="categorie in newCategories" :key="categorie" class="newCategories">
             <span @click="deleteCategorie(categorie)">{{ categorie }}</span>
           </div>
           <p class="text-white bg-danger w-100 rounded-1 mt-3">{{ categories_error }}</p>
         </div>
         <div class="form-floating w-100 mt-4">
-          <input class="submit form-control rounded-1 text-white p-0" type="submit"/>
+          <button class="submit btn rounded-1 text-white w-100">Update</button>
           <p class="text-start mt-2">Back to <strong><a href="/">home page</a></strong></p>
         </div>
       </form>
@@ -42,97 +50,90 @@
 </template>
 
 <script>
-import router from '@/router'
 import axios from 'axios'
 export default {
   data() {
     return {
+      idea_id: this.$route.params.id,
+
       title: '',
       description: '',
       content: '',
       image: '',
-      tempCategorie: "",
-      categories: [],
-      // errors
+
+      newCategories: [],
+      oldCategories: [],
+
+      tempCategorie: '',
+
       title_error: '',
       description_error: '',
       content_error: '',
       image_error: '',
       categories_error: ''
-    };
+    }
+  },
+  async mounted() {
+    const token = localStorage.getItem('token')
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    const response = await axios.get('http://127.0.0.1:8000/api/ideas/update/' + this.idea_id)
+
+    this.title = response.data.title
+    this.description = response.data.description
+    this.content = response.data.content
+    this.oldCategories = response.data.categories
   },
   methods: {
     pushCategorie(e) {
       if(e.key === " " && this.tempCategorie !== " ") {
-        if(!this.categories.includes(this.tempCategorie)) {
-          this.categories.push(this.tempCategorie)
+        if(!this.newCategories.includes(this.tempCategorie)) {
+          this.newCategories.push(this.tempCategorie)
         }
         this.tempCategorie = ''
-      } 
+      }
     },
     deleteCategorie(categorie) {
-      this.categories = this.categories.filter(function(item) {
+      this.newCategories = this.newCategories.filter(function(item) {
         return categorie != item
       })
     },
     onFileChange(e) {
       this.image = e.target.files[0]
     },
-    async addPost() {
+    async update() {
       let token = localStorage.getItem('token')
       let headers = { 'Authorization': `Bearer ${token}` }
-      let formData = new FormData()
-
-      formData.append('title', this.title)
-      formData.append('description', this.description)
-      formData.append('content', this.content)
-      formData.append('image', this.image)
-
-      for (let i = 0; i < this.categories.length; i++) {
-        formData.append('categories[]', this.categories[i])
+      let newData = {
+        'title': this.title,
+        'description': this.description,
+        'content': this.content,
+        'image': this.image,
+        'categories': this.newCategories
       }
-
       try {
-        let response = await axios.post('http://127.0.0.1:8000/api/ideas', formData, { headers })
+        const response = await axios.put('http://127.0.0.1:8000/api/ideas/' + this.idea_id, newData, { headers })
         console.log(response)
-      } catch(e) {
-        if(e.response.status == 422) {
-          if(e.response.data.errors.hasOwnProperty('title')) {
-            this.title_error = e.response.data.errors.title[0]
-          } else {
-            this.title_error = ''
-          }
-          if(e.response.data.errors.hasOwnProperty('description')) {
-            this.description_error = e.response.data.errors.description[0]
-          } else {
-            this.description_error = ''
-          }
-          if(e.response.data.errors.hasOwnProperty('content')) {
-            this.content_error = e.response.data.errors.content[0]
-          } else {
-            this.content_error = ''
-          }
-          if(e.response.data.errors.hasOwnProperty('image')) {
-            this.image_error = e.response.data.errors.image[0]
-          } else {
-            this.image_error = ''
-          }
-          if(e.response.data.errors.hasOwnProperty('categories')) {
-            this.categories_error = e.response.data.errors.categories[0]
-          } else {
-            this.categories_error = ''
-          }
-          console.log(e)
-        }
+      } catch (error) {
+        console.log(error)
       }
-    }
-  },
-};
+    },
+  }
+}
 </script>
 
-
 <style scoped>
-.categories {
+.oldCategories {
+  display: inline-block;
+  margin: 20px 10px 0 0;
+  padding: 6px 12px;
+  background: #fff;
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: normal;
+  color: rgb(91, 91, 92);;
+  cursor: default;
+}
+.newCategories {
   display: inline-block;
   margin: 20px 10px 0 0;
   padding: 6px 12px;
@@ -159,6 +160,7 @@ textarea.form-control {
   width: 50%;
 }
 .submit {
+  padding: 10px;
   background-color: rgb(211, 198, 255);
   border: none;
   transition: 0.5s ease-in-out;
