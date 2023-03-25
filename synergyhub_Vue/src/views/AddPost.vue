@@ -95,6 +95,7 @@ export default {
       try {
         let response = await axios.post('http://127.0.0.1:8000/api/ideas', formData, { headers })
         console.log(response)
+        router.push('/')
       } catch(e) {
         if(e.response.status == 422) {
           if(e.response.data.errors.hasOwnProperty('title')) {

@@ -9,6 +9,11 @@
       </div>
     </div>
     <div class="container other-topics mt-5 gap-5">
+      <div class="form-floating w-100 mb-4 d-flex flex-column align-items-center">
+        <input class="form-control rounded-1 w-50 text-black" type="search" placeholder="target" v-model="target" v-bind="search"/>
+        <p class="text-white bg-danger w-50 rounded-1 mt-3">{{ search_error }}</p>
+        <button class="btn bg-dark text-white mt-2 text-center" @click="search()">Search</button>
+      </div>
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         <div v-for="idea in ideas" :key="idea.id" class="col mb-5">
           <div class="idea">
@@ -42,6 +47,8 @@ export default {
     return {
       ideas: [],
       isLogged: localStorage.getItem("token"),
+      target: '',
+      search_error: ''
     };
   },
   methods: {
@@ -49,6 +56,21 @@ export default {
       let response = await axios.get("http://127.0.0.1:8000/api/ideas");
       return response.data;
     },
+    async search() {
+      console.log(this.target)
+      if(this.target == '') {
+        this.search_error = 'This Field Connot Be Empty'
+      } else {
+        let response = await axios.get('http://127.0.0.1:8000/api/ideas/search/' + this.target)
+        console.log(response)
+        if(response.data.length != 0) {
+          this.ideas = response.data
+          this.search_error = ''
+        } else {
+          this.search_error = 'No Posts Found'
+        }
+      }
+    }
   },
   async mounted() {
     this.ideas = await this.fetch();

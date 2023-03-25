@@ -11,16 +11,11 @@
 <script>
 import router from './router';
 export default {
-  data() {
-    return {
-      
-    }
-  },
   methods: {
     checkLoggingAuth() {
       let tempToken = localStorage.getItem('token');
       if(tempToken != null) {
-        alert('You are already loged in a lhmar')
+        alert('You are already loged in')
         router.push('/')
       }
     },
