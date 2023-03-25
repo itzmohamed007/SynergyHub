@@ -28,20 +28,18 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         $fields = $request->validate([
-            'message'  => 'string|required',
-            'user_id' => 'required|integer',
-            'idea_id' => 'required|integer'
+            'message'  => 'string|required'
         ]);
 
         Comment::create([
             'message' => $fields['message'],
             'user_id' => Auth::id(),
-            'message' => $fields['message']
+            'idea_id' => $id
         ]);
-        
+
         return response([
             'status' => '201',
             'message' => 'Comment Created Successfully'

@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <Form v-if="formVisible" @close="formVisible = false" />
     <div class="main-image-container container w-100">
       <img :src="idea.image ? require(`@/assets/added_images/${idea.image}`) : null" class="main-image mt-5" />
       <div class="image-info mx-5 mb-4">
@@ -21,16 +20,20 @@
       <h3>Content:</h3>
       <p class="post-text">{{ idea.content }}</p>
       <div class="d-flex justify-content-center gap-5 my-5">
-        <button class="btn btn-outline-dark rounded-5 px-5 py-2" @click="showForm()">Comment</button>
       </div>
       <div class="comments">
-        <div v-for="comment in idea.comments" :key="comment.id">
+        <div class="form-floating w-100 mb-5">
+          <textarea class="form-control rounded-1" placeholder="Content" v-model="message"></textarea>
+          <label>Comment</label>
+          <button class="btn py-1 px-4 bg-dark text-white mt-3" @click="comment()">Send</button>
+        </div>
+        <div v-for="comment in comments" :key="comment.id">
           <p class="user"><strong>{{ comment.user.name }}</strong></p>
           <p class="comment">{{ comment.message}}</p>
-          <div class="d-flex align-items-center justify-content-center">
-            <button class="like btn btn-outline-danger rounded-5 px-5 py-1">Like</button>
+          <div class="d-flex align-items-center justify-content-start mt-0">
+            <button class="like btn btn-outline-danger rounded-5 px-4 py-0 fs-6">Like</button>
           </div>
-          <hr class="divider hr w-50">
+          <hr class="divider hr w-25">
         </div>
       </div>
     </div>
@@ -39,28 +42,37 @@
 
 <script>
 import axios from 'axios'
-import Form from "../components/Comment.vue"
 export default {
   data() {
     return {
       idea: [],
       id_idea: '',
-      formVisible: false,
+      message: '',
+      comments: {}
     };
   },
-  components: {
-    Form,
-  },
   methods: {
-    showForm() {
-      this.formVisible = true
+    async post() {
+      this.id_idea = this.$route.params.id
+      const response = await axios.get('http://127.0.0.1:8000/api/ideas/' + this.id_idea)
+      this.idea = response.data
+      console.log(response.data)
+      this.comments = []
+      this.comments = this.idea.comments ? this.idea.comments : []
     },
+    async comment() {
+      let token = localStorage.getItem('token')
+      let headers = { 'Authorization': `Bearer ${token}` }
+      let id = this.$route.params.id
+      await axios.post('http://127.0.0.1:8000/api/comments/' + id, {
+        'message': this.message
+      }, { headers })
+      this.message = ''
+      this.post()
+    }
   },
-  async mounted() {
-    this.id_idea = this.$route.params.id
-    const response = await axios.get('http://127.0.0.1:8000/api/ideas/' + this.id_idea)
-    this.idea = response.data
-    console.log(this.idea)
+  mounted() {
+    this.post()
   }
 };
 </script>
@@ -83,7 +95,7 @@ body {
 .divider {
   border-top: 0;
   height: 0.2rem;
-  margin: 1.5rem auto;
+  margin: 1.5rem 0;
   background-color: lavender;
   opacity: 1;
 }
@@ -127,9 +139,9 @@ img {
 .post-description {
   font-size: 1.3rem;
 }
-textarea {
-  width: 100%;
-  height: 300px;
+textarea.form-control {
+  height: 100px;
+  resize: none;
 }
 @media (max-width: 768px) {
   .post-text {

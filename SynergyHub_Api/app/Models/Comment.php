@@ -17,6 +17,8 @@ class Comment extends Model
         'idea_id'
     ];
 
+    public $timestamps = true;
+
     public function user() {
         return $this->belongsTo(User::class);
     }
