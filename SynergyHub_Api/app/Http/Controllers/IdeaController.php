@@ -41,7 +41,7 @@ class IdeaController extends Controller
         ]);
 
         $image = time() . '-' . $request->title . '.png';
-        $request->image->move(dirname(base_path()) . '\synergyhub\src\assets\added_images', $image);
+        $request->image->move(dirname(base_path()) . '\synergyhub_Vue\src\assets\added_images', $image);
 
         $idea = Idea::create([
             'user_id' => Auth::id(),
@@ -71,11 +71,8 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
-        return $idea->load(['comments.user' => function ($query) {
-            $query->orderBy('created_at', 'asc');
-        }], 'likes', 'categories');
+        return $idea->load('categories', 'comments.user', 'comments.likes');
     }
-    
 
     /**
      * Display the specified resource for updating.

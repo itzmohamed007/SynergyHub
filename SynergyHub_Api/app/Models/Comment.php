@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use App\Models\User;
-use App\Models\idea;
+use App\Models\Idea;
+use App\Models\Like;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,5 +26,9 @@ class Comment extends Model
 
     public function idea() {
         return $this->belongsTo(Idea::class);
+    }
+
+    public function likes() {
+        return $this->hasmany(Like::class);
     }
 }

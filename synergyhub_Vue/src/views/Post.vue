@@ -1,3 +1,7 @@
+<script setup>
+  import { Icon } from '@iconify/vue'
+</script>
+
 <template>
   <div class="home">
     <div class="main-image-container container w-100">
@@ -31,9 +35,14 @@
           <p class="user"><strong>{{ comment.user.name }}</strong></p>
           <p class="comment">{{ comment.message}}</p>
           <div class="d-flex align-items-center justify-content-start mt-0">
-            <button class="like btn btn-outline-danger rounded-5 px-4 py-0 fs-6">Like</button>
+            <div class="mb-4">
+              <button class="btn p-0" @click="like(comment.id)">
+                <Icon icon="mdi:cards-heart" color="red" width="40" height="40" v-if="comment.likes.user_id == auth_id"/>
+                <Icon icon="mdi:cards-heart-outline" color="red" width="50" height="50" v-else/>
+                </button>
+              <span class="mx-2 fw-light">likes: {{ comment.likes.length }}</span>
+            </div>
           </div>
-          <hr class="divider hr w-25">
         </div>
       </div>
     </div>
@@ -41,10 +50,12 @@
 </template>
 
 <script>
+import { Icon } from '@iconify/vue'
 import axios from 'axios'
 export default {
   data() {
     return {
+      auth_id: localStorage.getItem('id'),
       idea: [],
       id_idea: '',
       message: '',
@@ -52,13 +63,19 @@ export default {
     };
   },
   methods: {
+    async like(id) {
+      let token = localStorage.getItem('token')
+      let headers = { 'Authorization': `Bearer ${token}` }
+      await axios.post('http://127.0.0.1:8000/api/comments/' + id + '/like', null, { headers })
+      this.post()
+    },
     async post() {
       this.id_idea = this.$route.params.id
       const response = await axios.get('http://127.0.0.1:8000/api/ideas/' + this.id_idea)
       this.idea = response.data
-      console.log(response.data)
       this.comments = []
       this.comments = this.idea.comments ? this.idea.comments : []
+      console.log(this.comments[0].likes)
     },
     async comment() {
       let token = localStorage.getItem('token')

@@ -3,11 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Like;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class LikeController extends Controller
 {
+    public function toggleLike(Comment $comment) {
+        $userId = auth()->id();
+        $like = $comment->likes()->where('user_id', $userId)->first();
+    
+        if ($like) {
+            $like->delete();
+            return response()->json(
+                ['message' => 'deleted']
+            );
+        } else {
+            $comment->likes()->create(['user_id' => $userId]);
+            return response()->json(
+                ['message' => 'added']
+            );
+        }
+    }
+    
+    
+
     /**
      * Display a listing of the resource.
      */

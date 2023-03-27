@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Idea;
+use App\Models\Comment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,11 +12,10 @@ class Like extends Model
 
     protected $fillable = [
         'user_id',
-        'idea_id',
         'comment_id'
     ];
 
-    public function idea() {
-        return $this->belongsTo(Idea::class);
+    public function comment() {
+        return $this->belongsTo(Comment::class);
     }
 }

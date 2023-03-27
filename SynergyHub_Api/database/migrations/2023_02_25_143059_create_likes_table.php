@@ -14,18 +14,12 @@ return new class extends Migration
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('idea_id');
             $table->unsignedBigInteger('comment_id');
             $table->timestamps();
 
             $table->foreign('user_id')
             ->references('id')
             ->on('users')
-            ->onDelete('cascade');
-
-            $table->foreign('idea_id')
-            ->references('id')
-            ->on('ideas')
             ->onDelete('cascade');
 
             $table->foreign('comment_id')

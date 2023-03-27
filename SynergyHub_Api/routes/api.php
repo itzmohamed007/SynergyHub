@@ -58,8 +58,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/comments/{id}/{user_id}', [CommentController::class, 'destroy']); // Delete
 
     // Crud Likes
+    Route::post('/comments/{comment}/like', [LikeController::class, 'toggleLike']);
+
     Route::get('/likes', [LikeController::class, 'index']); // Read
-    Route::post('/likes', [LikeController::class, 'store']); // Create
+    // Route::post('/likes', [LikeController::class, 'store']); 
     Route::delete('/likes/{id}/{user_id}/{idea_id}/{comment_id}', [LikeController::class, 'destroy']); // Delete
 
     // LogOut

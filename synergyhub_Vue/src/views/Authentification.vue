@@ -44,6 +44,7 @@ export default {
           password: this.password
         })
         localStorage.setItem('token', response.data.token)
+        localStorage.setItem('id', response.data.user.id)
         router.push("/");
       } catch (e) {
         if(e.response.status == 422) {
